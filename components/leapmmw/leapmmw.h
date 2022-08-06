@@ -24,10 +24,9 @@ static void clearTargets () {
   for(int i = 1 ; i < 9; i++) publishTarget(to_string(i), 0, 0);
 }
 
-
-class LEAPMMW : public uart::UARTDevice, public Component {
+class leapmmw : public uart::UARTDevice, public Component {
  public:
-  LEAPMMW(UARTComponent *parent) : UARTDevice(parent) {}
+//  LEAPMMW(UARTComponent *parent) : UARTDevice(parent) {}
   
   void setup() override {
     //
