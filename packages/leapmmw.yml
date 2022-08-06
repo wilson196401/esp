@@ -1,6 +1,4 @@
 esphome:
-  includes:
-    - uart_read_line_sensor_leapmmw.h 
   on_boot:
     priority: -100
     then:
