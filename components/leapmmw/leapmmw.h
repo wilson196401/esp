@@ -25,7 +25,7 @@ static void clearTargets () {
 }
 
 
-class LEAPMMW : public Component, public uart::UARTDevice, public Component {
+class LEAPMMW : public uart::UARTDevice, public Component {
  public:
   leapmmw(UARTComponent *parent) : UARTDevice(parent) {}
   
