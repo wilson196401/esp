@@ -1,5 +1,10 @@
-#include "esphome.h"
-#include <string>
+#pragma once
+
+#include "esphome/core/component.h"
+#include "esphome/components/uart/uart.h"
+
+namespace esphome {
+namespace leapmmw {
 
 void publishTarget(std::string idx, float dist, float snr) {
   auto get_sensors = App.get_sensors();
@@ -20,7 +25,7 @@ static void clearTargets () {
 }
 
 
-class leapmmw : public Component, public UARTDevice {
+class LEAPMMW : public Component, public uart::UARTDevice, public Component {
  public:
   leapmmw(UARTComponent *parent) : UARTDevice(parent) {}
   
@@ -187,3 +192,6 @@ class leapmmw : public Component, public UARTDevice {
     }
   }
 };
+
+} // namespace leapmmw
+} // namespace esphome
