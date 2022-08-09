@@ -1,8 +1,4 @@
 esphome:
-  on_boot:
-    priority: -100
-    then:
-      - script.execute: get_mmwave_params # still needed with getmmwConf()
 
 # Enable logging
 logger:
@@ -12,16 +8,6 @@ logger:
 
 # Enable Home Assistant API
 api:
-  reboot_timeout: 6h
-  services:
-      # Service to send a command directly to the display. Useful for testing
-    - service: send_command
-      variables:
-        cmd: string
-      then:
-        - uart.write: !lambda
-            std::string command = to_string(cmd) +"\r";
-            return std::vector<uint8_t>(command.begin(), command.end());
 
 substitutions:
   device_name: mmwave-extra
@@ -34,12 +20,6 @@ uart:
   tx_pin: ${uart_tx_pin}
   rx_pin: ${uart_rx_pin}
   baud_rate: 115200
-  debug:
-    direction: BOTH
-    after:
-      delimiter: "\n"
-    sequence:
-      - lambda: UARTDebug::log_string(direction, bytes);
 
 binary_sensor:
   - platform: gpio
@@ -60,30 +40,6 @@ binary_sensor:
                 return clearTargets();
     
 sensor:      
-#  - platform: uptime
-#    name: uptime_sensor
-#    id: uptime_sensor
-#    update_interval: 60s
-#    internal: true
-#    on_raw_value:
-#      then:
-#        - text_sensor.template.publish:
-#            id: uptime_human_readable
-#            state: !lambda |-
-#                      int seconds = round(id(uptime_sensor).raw_state);
-#                      int days = seconds / (24 * 3600);
-#                      seconds = seconds % (24 * 3600);
-#                      int hours = seconds / 3600;
-#                      seconds = seconds % 3600;
-#                      int minutes = seconds /  60;
-#                      seconds = seconds % 60;
-#                      return (
-#                        (days ? to_string(days)+":" : "00:") +
-#                        (hours ? to_string(hours)+":" : "00:") +
-#                        (minutes ? to_string(minutes)+":" : "00:") +
-#                        (to_string(seconds))
-#                      ).c_str();
-              
   - platform: template
     name: target_1_distance_m
     id: target_1_distance_m # do not change
@@ -176,15 +132,11 @@ sensor:
     sensors:
       
 switch:
-  - platform: safe_mode
-    name: use_safe_mode
-
   - platform: template
     name: mmwave_sensor
     id: mmwave_sensor # do not change
     entity_category: config
     optimistic: true
-    # assumed_state: true
     turn_on_action:
       - uart.write: "setUartOutput 1 0"
       - delay: 1s
@@ -193,8 +145,6 @@ switch:
       - uart.write: "saveConfig"
       - delay: 3s 
       - uart.write: "sensorStart"
-      # - delay: 3s
-      # - script.execute: get_mmwave_params # not needed with getmmwConf
     turn_off_action:
       - uart.write: "sensorStop"
 
@@ -229,22 +179,18 @@ number:
     entity_category: config
     min_value: 0.15
     max_value: 9.45
-    initial_value: 6
-    optimistic: true
     step: 0.15
     unit_of_measurement: M
     mode: box
-    # lambda: |-
-    #   return leapmmw(id(uart_bus)).getmmwConf("getRange");
+    lambda: |-
+      leapmmw(id(uart_bus)).getmmwConf("getRange");
+      return {};
     set_action:
       - switch.turn_off: mmwave_sensor
       - delay: 1s
       - uart.write: !lambda
           std::string range = "setRange 0 " + str_sprintf("%.2f", x);
           return std::vector<unsigned char>(range.begin(), range.end());
-      - delay: 1s
-      - lambda: |-
-          leapmmw(id(uart_bus)).getmmwConf("getRange");
       - delay: 1s
       - switch.turn_on: mmwave_sensor 
       
@@ -254,10 +200,9 @@ number:
     entity_category: config
     min_value: 1
     max_value: 600
-    initial_value: 15
-    optimistic: true
-    # lambda: |-
-    #   return leapmmw(id(uart_bus)).getmmwConf("getLatency");
+    lambda: |-
+      leapmmw(id(uart_bus)).getmmwConf("getLatency");
+      return {};
     step: 1
     unit_of_measurement: s
     mode: box
@@ -268,9 +213,6 @@ number:
           std::string setL = "setLatency 0.1 " + str_sprintf("%.0f", x);
           return std::vector<unsigned char>(setL.begin(), setL.end());
       - delay: 1s
-      - lambda: |-
-          leapmmw(id(uart_bus)).getmmwConf("getLatency");
-      - delay: 1s
       - switch.turn_on: mmwave_sensor
 
   - platform: template
@@ -279,10 +221,9 @@ number:
     entity_category: config
     min_value: 0
     max_value: 9
-    initial_value: 7
-    optimistic: true
-    # lambda: |-
-    #   return leapmmw(id(uart_bus)).getmmwConf("getSensitivity");
+    lambda: |-
+      leapmmw(id(uart_bus)).getmmwConf("getSensitivity");
+      return {};
     step: 1
     set_action:
       - switch.turn_off: mmwave_sensor
@@ -290,9 +231,6 @@ number:
       - uart.write: !lambda
           std::string mss = "setSensitivity " + to_string((int)x);
           return std::vector<unsigned char>(mss.begin(), mss.end());
-      - delay: 1s
-      - lambda: |-
-          leapmmw(id(uart_bus)).getmmwConf("getSensitivity");
       - delay: 1s
       - switch.turn_on: mmwave_sensor
 
@@ -315,14 +253,3 @@ button:
       - uart.write: "resetCfg"
       - delay: 3s
       - switch.turn_on: mmwave_sensor 
-      
-script:
-  - id: get_mmwave_params
-    then: 
-      - uart.write: "getLedMode 1"
-      - delay: 1s
-      - uart.write: "getRange"
-      - delay: 1s
-      - uart.write: "getLatency"
-      - delay: 1s
-      - uart.write: "getSensitivity"

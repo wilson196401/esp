@@ -53,6 +53,7 @@ class leapmmw : public uart::UARTDevice, public Component {
   };
 
   void getmmwConf(std::string mmwparam) {
+    mmwparam = mmwparam + "\r";
     write_array(std::vector<unsigned char>(mmwparam.begin(), mmwparam.end()));
   }
 
@@ -121,7 +122,7 @@ class leapmmw : public uart::UARTDevice, public Component {
           ESP_LOGD("custom", "Found Response - lastline is: %s", getline.c_str());
           
           // leapMMW:/>getSensitivity
-          if (getline.substr(0, 24) == "leapMMW:/>getSensitivity") {
+          if (getline.substr(0, 24) == "leapMMW:/>getSensitivity" || getline.substr(0, 14) == "getSensitivity") {
             std::string getSensitivity = line.substr(9, 1);
             if (getSensitivity.empty()) {
               ESP_LOGD("custom", "Did not find a value for getSensitivity");
@@ -132,8 +133,8 @@ class leapmmw : public uart::UARTDevice, public Component {
           }
 
           // leapMMW:/>getRange
-          if (getline.substr(0, 18) == "leapMMW:/>getRange") {
-            std::string getRange = line.substr(15, 5);
+          if (getline.substr(0, 18) == "leapMMW:/>getRange" || getline.substr(0, 8) == "getRange") {
+            std::string getRange = line.substr(15, 4);
             if (getRange.empty()) {
               ESP_LOGD("custom", "Did not find a value for getRange");
             } else {
@@ -143,8 +144,8 @@ class leapmmw : public uart::UARTDevice, public Component {
           }
 
           // leapMMW:/>getLatency
-          if (getline.substr(0, 20) == "leapMMW:/>getLatency") {
-            std::string getLatency = line.substr(15, 3);
+          if (getline.substr(0, 20) == "leapMMW:/>getLatency" || getline.substr(0, 10) == "getLatency") {
+            std::string getLatency = line.substr(15, 2);
             if (getLatency.empty()) {
               ESP_LOGD("custom", "Did not find a value for getLatency");
             } else {
@@ -154,7 +155,7 @@ class leapmmw : public uart::UARTDevice, public Component {
           }
 
           // leapMMW:/>getLedMode
-          if (getline.substr(0, 20) == "leapMMW:/>getLedMode") {
+          if (getline.substr(0, 20) == "leapMMW:/>getLedMode" || getline.substr(0, 10) == "getLedMode") {
             std::string getLedMode = line.substr(11, 1);
             if (getLedMode.empty()) {
               ESP_LOGD("custom", "Did not find a value for getLedMode");
