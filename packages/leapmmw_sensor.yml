@@ -92,7 +92,7 @@ sensor:
 
   - platform: custom
     lambda: |-
-      auto s = new leapmmw(id(uart_bus));
+      auto s = new HS2XX3A(id(uart_bus));
       App.register_component(s);
       return {};
     sensors:
@@ -180,7 +180,7 @@ number:
     unit_of_measurement: M
     mode: box
     lambda: |-
-      leapmmw(id(uart_bus)).getmmwConf("getRange");
+      HS2XX3A(id(uart_bus)).getmmwConf("getRange");
       return {};
     set_action:
       then:
@@ -214,7 +214,7 @@ number:
     min_value: 1
     max_value: 600
     lambda: |-
-      leapmmw(id(uart_bus)).getmmwConf("getLatency");
+      HS2XX3A(id(uart_bus)).getmmwConf("getLatency");
       return {};
     step: 1
     unit_of_measurement: s
@@ -251,7 +251,7 @@ number:
     min_value: 0
     max_value: 9
     lambda: |-
-      leapmmw(id(uart_bus)).getmmwConf("getSensitivity");
+      HS2XX3A(id(uart_bus)).getmmwConf("getSensitivity");
       return {};
     step: 1
     set_action:
@@ -329,7 +329,7 @@ script:
       - uart.write: "setLedMode 1 0"
       - delay: 1s
       - lambda: |-
-          leapmmw(id(uart_bus)).getmmwConf("getLedMode 1");
+          HS2XX3A(id(uart_bus)).getmmwConf("getLedMode 1");
       - delay: 1s 
       - switch.turn_on: mmwave_sensor
       - delay: 6s # the sum of mmwave_sensor delays
@@ -341,7 +341,7 @@ script:
       - uart.write: "setLedMode 1 1"
       - delay: 1s
       - lambda: |-
-          leapmmw(id(uart_bus)).getmmwConf("getLedMode 1");
+          HS2XX3A(id(uart_bus)).getmmwConf("getLedMode 1");
       - delay: 1s
       - switch.turn_on: mmwave_sensor
       - delay: 6s # the sum of mmwave_sensor delays
