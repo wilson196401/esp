@@ -44,7 +44,7 @@ binary_sensor:
                 id: num_targets
                 state: 0
             - lambda: |-
-                return clearTargets();
+                return HS2XX3A::clearTargets();
     
 sensor:      
   - platform: template
@@ -92,12 +92,12 @@ sensor:
     id: num_targets # do not change
     accuracy_decimals: 0
 
-  - platform: custom
-    lambda: |-
-      auto s = new hs2xx3a(id(uart_bus));
-      App.register_component(s);
-      return {};
-    sensors:
+#  - platform: custom
+#    lambda: |-
+#      auto s = new hs2xx3a(id(uart_bus));
+#      App.register_component(s);
+#      return {};
+#    sensors:
       
 switch:
   - platform: safe_mode
@@ -109,7 +109,7 @@ switch:
     optimistic: true
     internal: true
     on_turn_off:
-      - lambda: 'return clearTargets();'
+      - lambda: 'return HS2XX3A::clearTargets();'
 
   - platform: template
     name: mmwave_sensor
