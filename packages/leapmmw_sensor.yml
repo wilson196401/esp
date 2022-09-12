@@ -9,8 +9,8 @@ substitutions:
 
 esphome:
   name: ${device_name}
-  includes:
-    - ${header_file}
+#  includes:
+#    - ${header_file}
 
 logger:
   logs:
