@@ -24,7 +24,7 @@ void HS2XX3A::publishTarget(std::string idx, float dist, float snr) {
   }
 }
 
-static void HS2XX3A::clearTargets() {
+void HS2XX3A::clearTargets() {
   for (int i = 1; i < 9; i++)
     publishTarget(to_string(i), 0, 0);
 }
@@ -77,8 +77,7 @@ int HS2XX3A::readline(int readch, char *buffer, int len) {
   return -1;
 }
 
-void HS2XX3A::setup() override {}
-void HS2XX3A::loop() override {
+void HS2XX3A::loop() {
   const int max_line_length = 40;
   static char buffer[max_line_length];
   std::string getline;

@@ -13,7 +13,7 @@ class HS2XX3A : public uart::UARTDevice, public Component {
   void dump_config() override;
 
   void publishTarget(std::string idx, float dist, float snr);
-  static void clearTargets();
+  void clearTargets();
   void publishNumber(std::string sensor, float resp);
   void publishSwitch(std::string sensor, int state);
   void getmmwConf(std::string mmwparam);
