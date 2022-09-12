@@ -83,17 +83,17 @@ void HS2XX3A::loop() {
   std::string getline;
 
   while (available()) {
-    if (id(mmwave_sensor).state == 0 && id(num_targets).state > 0) {
-      id(num_targets).publish_state(0);
-      clearTargets();
-    }
+//     if (id(mmwave_sensor).state == 0 && id(num_targets).state > 0) {
+//       id(num_targets).publish_state(0);
+//       clearTargets();
+//     }
     if (readline(read(), buffer, max_line_length) >= 4) {
       std::string line = buffer;
 
-      if (line.substr(0, 18) == "leapMMW:/>$JYBSS,0" && id(num_targets).state > 0) {
-        id(num_targets).publish_state(0);
-        clearTargets();
-      }
+//       if (line.substr(0, 18) == "leapMMW:/>$JYBSS,0" && id(num_targets).state > 0) {
+//         id(num_targets).publish_state(0);
+//         clearTargets();
+//       }
       if (line.substr(0, 6) == "$JYRPO") {
         std::string vline = line.substr(6);
         std::vector<std::string> v;
@@ -104,17 +104,17 @@ void HS2XX3A::loop() {
             v.back() += vline[i];
           }
         }
-        id(num_targets).publish_state(parse_number<float>(v[0]).value());
-        if (id(show_target_stats).state == 1) {
-          publishTarget(v[1], parse_number<float>(v[2]).value(), parse_number<float>(v[4]).value());
-          // zero null targets
-          for (int i = parse_number<int>(v[0]).value() + 1; i < 9; i++)
-            publishTarget(to_string(i), 0, 0);
-        }
+//         id(num_targets).publish_state(parse_number<float>(v[0]).value());
+//         if (id(show_target_stats).state == 1) {
+//           publishTarget(v[1], parse_number<float>(v[2]).value(), parse_number<float>(v[4]).value());
+//           // zero null targets
+//           for (int i = parse_number<int>(v[0]).value() + 1; i < 9; i++)
+//             publishTarget(to_string(i), 0, 0);
+//         }
       }
-      if (line.substr(0, 6) == "$JYRPO" && id(mmwave_sensor).state == 0) {
-        publishSwitch("mmwave_sensor", 1);
-      }
+//       if (line.substr(0, 6) == "$JYRPO" && id(mmwave_sensor).state == 0) {
+//         publishSwitch("mmwave_sensor", 1);
+//       }
 
       // compare last line
       if (line.substr(0, 8) == "Response") {
