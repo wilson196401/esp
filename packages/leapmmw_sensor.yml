@@ -27,6 +27,15 @@ uart:
 
 binary_sensor:
   - platform: gpio
+    name: pir_detection
+    id: pir_detection
+    internal: false
+    pin:
+      number: GPIO27
+      mode: INPUT_PULLDOWN
+    filters:
+      - delayed_off: 2s  
+  - platform: gpio
     name: mmwave_presence_detection
     id: mmwave_presence_detection
     device_class: motion
