@@ -4,6 +4,7 @@ substitutions:
   uart_tx_pin: GPIO19
   uart_rx_pin: GPIO18
   ##
+  pir_motion_pin: GPIO27
   gpio_pin: GPIO23
   header_file: leapmmw_sensor.h
 
@@ -30,8 +31,8 @@ binary_sensor:
     name: pir_detection
     id: pir_detection
     internal: false
-    pin:
-      number: GPIO27
+    pin: 
+      number: ${pir_motion_pin}
       mode: INPUT_PULLDOWN
     filters:
       - delayed_off: 2s  
